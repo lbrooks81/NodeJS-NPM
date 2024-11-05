@@ -9,36 +9,22 @@ const app = express();
 app.use(express.static('public'));
 app.listen(3000, () =>
 {
-    console.log(URL);
+    console.log(`${URL}/jokey`);
+
 })
 
-app.get('/', (request, response) =>
+app.get('/jokey', (request, res) =>
 {
-   displayJoke();
+    axios.get('https://official-joke-api.appspot.com/random_joke')
+        .then(function (response)
+        {
+            let setup = response.data.setup;
+            let punchline = response.data.punchline;
+
+            res.send(`<h4>${setup}</h4>
+                    <h4>${punchline}</h4>`);
+        });
 });
 
-// / Set up axios instance
-const api = axios.create({
-    baseURL: URL,
-    timeout: 1000
-});
 
-function displayJoke()
-{
-    api.request
-    ({
-        url: 'https://official-joke-api.appspot.com/random_joke',
-        method: 'get',
-        responseType: 'json'
-    })
-    .then(function (response)
-    {
-        let setup = response.data.setup;
-        let punchline = response.data.punchline;
-
-        console.log(response.data);
-        response.data.post(`<h4>${setup}</h4>`);
-        response.data.post(`<h4>${punchline}</h4>`);
-    });
-}
 
